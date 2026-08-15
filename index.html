@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bearcat Cafe — New Orleans</title>
+<meta name="description" content="Full-service breakfast & lunch cafe in New Orleans. Three concepts, one cat. Uptown, CBD, and Bearcat Baked.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Libre+Franklin:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cream: '#F5EFDF',
+          paper: '#EFE5CC',
+          ink: '#211A13',
+          goodcat: '#5F7754',
+          goodcatdark: '#3E4F37',
+          badcat: '#7A2A22',
+          badcatdark: '#54180F',
+          gold: '#B9863C',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Libre Franklin', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { background:#F5EFDF; color:#211A13; }
+
+  .punch-edge-bottom {
+    -webkit-mask-image: radial-gradient(circle at 12px 0, transparent 8px, black 8.5px);
+    mask-image: radial-gradient(circle at 12px 0, transparent 8px, black 8.5px);
+    -webkit-mask-size: 24px 100%;
+    mask-size: 24px 100%;
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+  }
+  .ticket-rail {
+    background-image: repeating-linear-gradient(to right, #B9863C 0, #B9863C 10px, transparent 10px, transparent 20px);
+    height: 2px;
+  }
+  .dot-leader { border-bottom: 2px dotted rgba(33,26,19,0.35); flex: 1; margin: 0 0.6rem; height: 1em; }
+
+  .marquee-track { display:flex; width: max-content; animation: marquee 32s linear infinite; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .cat-toggle-btn { transition: all .35s ease; }
+  .panel { transition: opacity .4s ease, transform .4s ease; }
+  .panel-hidden { opacity: 0; transform: translateY(8px); position:absolute; pointer-events:none; }
+  .panel-visible { opacity: 1; transform: translateY(0); position:relative; }
+
+  .grain {
+    position: relative;
+  }
+  .grain::before {
+    content:"";
+    position:absolute; inset:0; pointer-events:none; opacity:.06; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .stamp-rotate { transform: rotate(-6deg); }
+
+  ::selection { background:#B9863C; color:#F5EFDF; }
+
+  .hover-underline { background-image: linear-gradient(#B9863C,#B9863C); background-size: 0% 2px; background-repeat:no-repeat; background-position: 0 100%; transition: background-size .3s; }
+  .hover-underline:hover { background-size: 100% 2px; }
+</style>
+</head>
+<body class="font-body text-ink">
+
+<!-- ============ NAV ============ -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 bg-cream/95 backdrop-blur border-b border-ink/10 transition-all">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between h-16 md:h-20">
+    <a href="#top" class="font-display font-700 text-xl md:text-2xl tracking-tight flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-badcat"></span>
+      BEARCAT <span class="hidden sm:inline text-gold">CAFE</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8 font-body text-sm font-600 uppercase tracking-wide">
+      <a href="#menu" class="hover-underline pb-1">Menu</a>
+      <a href="#locations" class="hover-underline pb-1">Locations</a>
+      <a href="#coffee" class="hover-underline pb-1">Coffee &amp; Bar</a>
+      <a href="#gallery" class="hover-underline pb-1">Gallery</a>
+    </nav>
+    <a href="#order" class="hidden md:inline-block bg-badcat hover:bg-badcatdark text-cream font-body font-700 text-sm uppercase tracking-wide px-5 py-2.5 rounded-full transition-colors">Order Online</a>
+    <button id="menuBtn" class="md:hidden w-9 h-9 flex flex-col justify-center items-center gap-1.5">
+      <span class="block w-6 h-0.5 bg-ink"></span>
+      <span class="block w-6 h-0.5 bg-ink"></span>
+      <span class="block w-6 h-0.5 bg-ink"></span>
+    </button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-cream border-t border-ink/10 px-5 py-4 flex flex-col gap-4 font-body font-600 uppercase text-sm tracking-wide">
+    <a href="#menu">Menu</a>
+    <a href="#locations">Locations</a>
+    <a href="#coffee">Coffee &amp; Bar</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#order" class="bg-badcat text-cream text-center py-2.5 rounded-full">Order Online</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="top" class="relative pt-16 md:pt-20 min-h-[92vh] flex items-end overflow-hidden">
+  <img src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_1600/http://static.spotapps.co/spots/2a/ac4dfd3b3c4138a2be06f14ec82107/:original"
+       alt="Bearcat Cafe breakfast spread"
+       class="absolute inset-0 w-full h-full object-cover"
+       onerror="this.src='https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_1600/http://static.spotapps.co/spots/dc/118adb1a4a492c81c6e8caf538afb2/:original'">
+  <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-ink/10"></div>
+  <div class="absolute inset-0 bg-badcat/10"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-5 md:px-8 pb-16 md:pb-20 w-full">
+    <p class="font-mono text-gold text-xs md:text-sm tracking-[0.25em] uppercase mb-4">Uptown &middot; CBD &middot; New Orleans, LA</p>
+    <h1 class="font-display font-900 text-cream leading-[0.92] text-[15vw] md:text-[7vw] lg:text-[6.2vw]">
+      GOOD CAT.<br><span class="italic font-500 text-badcat" style="-webkit-text-stroke:1.5px #F5EFDF; color:transparent;">BAD CAT.</span>
+    </h1>
+    <p class="text-cream/85 text-base md:text-lg max-w-xl mt-6 font-body">
+      A full-service sit-down cafe built around one honest split: light and clean, or hearty and indulgent. Fresh breakfast and lunch, sustainably-sourced coffee, and a bar program worth sticking around for.
+    </p>
+    <div class="flex flex-wrap gap-4 mt-8">
+      <a href="#menu" class="bg-cream text-ink font-body font-700 text-sm uppercase tracking-wide px-7 py-3.5 rounded-full hover:bg-gold hover:text-cream transition-colors">See The Menu</a>
+      <a href="#order" class="border border-cream/60 text-cream font-body font-700 text-sm uppercase tracking-wide px-7 py-3.5 rounded-full hover:bg-cream hover:text-ink transition-colors">Order Takeout</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE TICKER ============ -->
+<div class="bg-ink py-3 overflow-hidden whitespace-nowrap border-y-2 border-gold">
+  <div class="marquee-track font-mono text-cream text-sm md:text-base tracking-wide">
+    <span class="px-6">SHRIMP &amp; GRITS</span><span class="text-gold">&middot;</span>
+    <span class="px-6">CRAB SCRAMBLE</span><span class="text-gold">&middot;</span>
+    <span class="px-6">LAVENDER HONEY LATTE</span><span class="text-gold">&middot;</span>
+    <span class="px-6">BOUDIN EGG ROLLS</span><span class="text-gold">&middot;</span>
+    <span class="px-6">ESPRESSO MARTINI</span><span class="text-gold">&middot;</span>
+    <span class="px-6">VEGAN RANCHERO</span><span class="text-gold">&middot;</span>
+    <span class="px-6">COUYON DADDY BISCUIT</span><span class="text-gold">&middot;</span>
+    <!-- duplicate for seamless loop -->
+    <span class="px-6">SHRIMP &amp; GRITS</span><span class="text-gold">&middot;</span>
+    <span class="px-6">CRAB SCRAMBLE</span><span class="text-gold">&middot;</span>
+    <span class="px-6">LAVENDER HONEY LATTE</span><span class="text-gold">&middot;</span>
+    <span class="px-6">BOUDIN EGG ROLLS</span><span class="text-gold">&middot;</span>
+    <span class="px-6">ESPRESSO MARTINI</span><span class="text-gold">&middot;</span>
+    <span class="px-6">VEGAN RANCHERO</span><span class="text-gold">&middot;</span>
+    <span class="px-6">COUYON DADDY BISCUIT</span><span class="text-gold">&middot;</span>
+  </div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section class="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28 grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+  <div>
+    <p class="font-mono text-badcat text-xs tracking-[0.25em] uppercase mb-4">Est. New Orleans</p>
+    <h2 class="font-display font-700 text-4xl md:text-5xl leading-tight mb-6">One cafe.<br>Two appetites.</h2>
+    <p class="text-ink/80 leading-relaxed mb-4">
+      Bearcat is a full-service sit-down cafe built on fresh, high-quality breakfast and lunch &mdash; a curated line of sustainably-sourced coffee, loose-leaf teas, and house-made bottled beverages alongside a menu that genuinely means it when it says "for everyone."
+    </p>
+    <p class="text-ink/80 leading-relaxed mb-4">
+      Every menu splits in two: <span class="text-goodcat font-700">Good Cat</span> for lighter, vegetable-forward plates, and <span class="text-badcat font-700">Bad Cat</span> for the hearty, indulgent side of the house. Vegetarian, vegan, paleo, and gluten-free options run through both.
+    </p>
+    <p class="text-ink/80 leading-relaxed">
+      Three concepts carry the mark across the city: <strong>Bearcat Uptown</strong>, <strong>Bearcat CBD</strong> &mdash; with a full dinner menu and bar program &mdash; and <strong>Bearcat Baked</strong>, a dedicated bakery and coffee counter.
+    </p>
+  </div>
+  <div class="grid grid-cols-2 gap-4">
+    <img src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/16/9d50abf647498e8624739e24040dc0/:original" alt="Farro bowl" class="rounded-2xl object-cover w-full h-56 md:h-64 mt-8">
+    <img src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/b0/2d15f8562f48b791c19a238f227df1/:original" alt="Couyon Daddy biscuit" class="rounded-2xl object-cover w-full h-56 md:h-64">
+  </div>
+</section>
+
+<div class="ticket-rail max-w-7xl mx-auto opacity-60"></div>
+
+<!-- ============ MENU: GOOD CAT / BAD CAT TOGGLE ============ -->
+<section id="menu" class="max-w-5xl mx-auto px-5 md:px-8 py-20 md:py-28">
+  <div class="text-center mb-12">
+    <p class="font-mono text-gold text-xs tracking-[0.25em] uppercase mb-3">Served all day</p>
+    <h2 class="font-display font-700 text-4xl md:text-5xl">Pick your cat.</h2>
+  </div>
+
+  <!-- Toggle -->
+  <div class="flex justify-center mb-10">
+    <div class="inline-flex bg-paper rounded-full p-1.5 border border-ink/10">
+      <button onclick="showCat('good')" id="btnGood" class="cat-toggle-btn px-6 md:px-8 py-3 rounded-full font-body font-700 text-sm uppercase tracking-wide bg-goodcat text-cream">Good Cat</button>
+      <button onclick="showCat('bad')" id="btnBad" class="cat-toggle-btn px-6 md:px-8 py-3 rounded-full font-body font-700 text-sm uppercase tracking-wide text-ink/60">Bad Cat</button>
+    </div>
+  </div>
+
+  <div class="relative">
+    <!-- GOOD CAT PANEL -->
+    <div id="panelGood" class="panel panel-visible bg-cream border-2 border-goodcat/30 rounded-3xl p-6 md:p-10 punch-edge-bottom pb-10">
+      <p class="font-display italic text-goodcat text-lg mb-6">Lighter fare, vegetable-forward, dietary-friendly.</p>
+      <div class="space-y-5 font-body">
+        <div class="flex items-baseline"><span class="font-600">Vegan Bearcat <span class="text-xs text-ink/50 font-mono">V/GF</span></span><span class="dot-leader"></span><span class="font-mono text-goodcatdark font-700">$16</span></div>
+        <div class="flex items-baseline"><span class="font-600">Vegan Ranchero</span><span class="dot-leader"></span><span class="font-mono text-goodcatdark font-700">$14</span></div>
+        <div class="flex items-baseline"><span class="font-600">Vegan Quesadilla</span><span class="dot-leader"></span><span class="font-mono text-goodcatdark font-700">$14</span></div>
+        <div class="flex items-baseline"><span class="font-600">Farro Bowl <span class="text-xs text-ink/50 font-mono">V</span></span><span class="dot-leader"></span><span class="font-mono text-goodcatdark font-700">$15</span></div>
+        <div class="flex items-baseline"><span class="font-600">Trumpet Scallops <span class="text-xs text-ink/50 font-mono">V/GF</span></span><span class="dot-leader"></span><span class="font-mono text-goodcatdark font-700">$18</span></div>
+        <div class="flex items-baseline"><span class="font-600">Buffalo Cauliflower <span class="text-xs text-ink/50 font-mono">V/GF</span></span><span class="dot-leader"></span><span class="font-mono text-goodcatdark font-700">$12</span></div>
+        <div class="flex items-baseline"><span class="font-600">Vegan Burger</span><span class="dot-leader"></span><span class="font-mono text-goodcatdark font-700">$16</span></div>
+      </div>
+    </div>
+
+    <!-- BAD CAT PANEL -->
+    <div id="panelBad" class="panel panel-hidden bg-ink border-2 border-badcat/40 rounded-3xl p-6 md:p-10 punch-edge-bottom pb-10">
+      <p class="font-display italic text-badcat text-lg mb-6">Hearty, indulgent, no apologies.</p>
+      <div class="space-y-5 font-body text-cream">
+        <div class="flex items-baseline"><span class="font-600">Bearcat Breakfast</span><span class="dot-leader" style="border-color:rgba(245,239,223,0.25)"></span><span class="font-mono text-gold font-700">$16</span></div>
+        <div class="flex items-baseline"><span class="font-600">Crab Scramble <span class="text-xs text-cream/50 font-mono">GF</span></span><span class="dot-leader" style="border-color:rgba(245,239,223,0.25)"></span><span class="font-mono text-gold font-700">$28</span></div>
+        <div class="flex items-baseline"><span class="font-600">Shrimp &amp; Grits</span><span class="dot-leader" style="border-color:rgba(245,239,223,0.25)"></span><span class="font-mono text-gold font-700">$26</span></div>
+        <div class="flex items-baseline"><span class="font-600">Cat Daddy Biscuit</span><span class="dot-leader" style="border-color:rgba(245,239,223,0.25)"></span><span class="font-mono text-gold font-700">$26</span></div>
+        <div class="flex items-baseline"><span class="font-600">Couyon Daddy</span><span class="dot-leader" style="border-color:rgba(245,239,223,0.25)"></span><span class="font-mono text-gold font-700">$30</span></div>
+        <div class="flex items-baseline"><span class="font-600">Pork Tenderloin <span class="text-xs text-cream/50 font-mono">GF</span></span><span class="dot-leader" style="border-color:rgba(245,239,223,0.25)"></span><span class="font-mono text-gold font-700">$28</span></div>
+        <div class="flex items-baseline"><span class="font-600">Hot Chicken Sandwich</span><span class="dot-leader" style="border-color:rgba(245,239,223,0.25)"></span><span class="font-mono text-gold font-700">$16</span></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center text-ink/50 text-sm mt-8 font-mono">Full menu &mdash; breakfast, lunch, kids, coffee &amp; tea, beer, wine, cocktails &mdash; available in-app.</p>
+</section>
+
+<!-- ============ LOCATIONS ============ -->
+<section id="locations" class="bg-ink text-cream py-20 md:py-28 grain">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="mb-14 max-w-2xl">
+      <p class="font-mono text-gold text-xs tracking-[0.25em] uppercase mb-3">Three doors, one cat</p>
+      <h2 class="font-display font-700 text-4xl md:text-5xl">Find your Bearcat.</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Uptown -->
+      <div class="bg-cream text-ink rounded-3xl overflow-hidden flex flex-col">
+        <img src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_600/http://static.spotapps.co/spots/dc/118adb1a4a492c81c6e8caf538afb2/:original" alt="Bearcat Uptown" class="w-full h-48 object-cover">
+        <div class="p-6 flex flex-col flex-1">
+          <span class="font-mono text-xs uppercase tracking-wide text-badcat mb-1">Original</span>
+          <h3 class="font-display font-700 text-2xl mb-2">Bearcat Uptown</h3>
+          <p class="text-sm text-ink/70 leading-relaxed mb-1">2521 Jena Street<br>New Orleans, LA 70115</p>
+          <p class="text-sm text-ink/70 mb-1">(504) 309-9011</p>
+          <p class="text-sm text-ink/70 mb-4">8am&ndash;3pm &middot; Tue&ndash;Sun</p>
+          <a href="https://app.upserve.com/s/bearcat-cafe-jefferson" target="_blank" class="mt-auto bg-badcat text-cream text-center font-body font-700 text-sm uppercase tracking-wide py-2.5 rounded-full hover:bg-badcatdark transition-colors">Order Uptown</a>
+        </div>
+      </div>
+      <!-- CBD -->
+      <div class="bg-cream text-ink rounded-3xl overflow-hidden flex flex-col">
+        <img src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_600/http://static.spotapps.co/spots/2d/99c102615448c19d2604141a9099d0/:original" alt="Bearcat CBD" class="w-full h-48 object-cover">
+        <div class="p-6 flex flex-col flex-1">
+          <span class="font-mono text-xs uppercase tracking-wide text-goodcat mb-1">Full bar + dinner</span>
+          <h3 class="font-display font-700 text-2xl mb-2">Bearcat CBD</h3>
+          <p class="text-sm text-ink/70 leading-relaxed mb-1">845 Carondelet St<br>New Orleans, LA 70130</p>
+          <p class="text-sm text-ink/70 mb-1">(504) 766-7399</p>
+          <p class="text-sm text-ink/70 mb-4">8am&ndash;2pm Tue&ndash;Fri &middot; 8am&ndash;3pm Sat&ndash;Sun</p>
+          <a href="https://app.upserve.com/s/bearcat-cafe-downtown-new-orleans" target="_blank" class="mt-auto bg-goodcat text-cream text-center font-body font-700 text-sm uppercase tracking-wide py-2.5 rounded-full hover:bg-goodcatdark transition-colors">Order CBD</a>
+        </div>
+      </div>
+      <!-- Baked -->
+      <div class="bg-cream text-ink rounded-3xl overflow-hidden flex flex-col">
+        <img src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_600/http://static.spotapps.co/spots/25/5ca1e53dcb430e99297ac0dc606ea1/:original" alt="Bearcat Baked croissants" class="w-full h-48 object-cover">
+        <div class="p-6 flex flex-col flex-1">
+          <span class="font-mono text-xs uppercase tracking-wide text-gold mb-1">Bakery &amp; coffee</span>
+          <h3 class="font-display font-700 text-2xl mb-2">Bearcat Baked</h3>
+          <p class="text-sm text-ink/70 leading-relaxed mb-1">726 Julia Street<br>New Orleans, LA 70130</p>
+          <p class="text-sm text-ink/70 mb-1">(504) 438-8772</p>
+          <p class="text-sm text-ink/70 mb-4">8am&ndash;2pm Mon&ndash;Fri &middot; 8am&ndash;3pm Sat&ndash;Sun</p>
+          <a href="https://app.upserve.com/s/bearcat-julia-new-orleans" target="_blank" class="mt-auto bg-gold text-cream text-center font-body font-700 text-sm uppercase tracking-wide py-2.5 rounded-full hover:opacity-90 transition-colors">Order Baked</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COFFEE & BAR ============ -->
+<section id="coffee" class="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28 grid md:grid-cols-2 gap-14">
+  <div>
+    <p class="font-mono text-gold text-xs tracking-[0.25em] uppercase mb-3">Micro-sourced, brewed right</p>
+    <h3 class="font-display font-700 text-3xl md:text-4xl mb-6">Coffee &amp; Tea</h3>
+    <div class="space-y-4 font-body">
+      <div class="flex items-baseline"><span>Espresso</span><span class="dot-leader"></span><span class="font-mono">$3.50</span></div>
+      <div class="flex items-baseline"><span>Cortado</span><span class="dot-leader"></span><span class="font-mono">$5.00</span></div>
+      <div class="flex items-baseline"><span>Golden Latte <span class="text-xs text-ink/50">turmeric, ginger, honey, espresso</span></span><span class="dot-leader"></span><span class="font-mono">$6.50</span></div>
+      <div class="flex items-baseline"><span>Lavender Honey Latte</span><span class="dot-leader"></span><span class="font-mono">$6.50</span></div>
+      <div class="flex items-baseline"><span>Rose Water Latte</span><span class="dot-leader"></span><span class="font-mono">$6.50</span></div>
+      <div class="flex items-baseline"><span>French Press</span><span class="dot-leader"></span><span class="font-mono">$11.00</span></div>
+    </div>
+  </div>
+  <div>
+    <p class="font-mono text-gold text-xs tracking-[0.25em] uppercase mb-3">Full-service bar program</p>
+    <h3 class="font-display font-700 text-3xl md:text-4xl mb-6">Cocktails</h3>
+    <div class="space-y-4 font-body">
+      <div class="flex items-baseline"><span>Bloody Mary <span class="text-xs text-ink/50">sambal, vegan worcestershire</span></span><span class="dot-leader"></span><span class="font-mono">$12.00</span></div>
+      <div class="flex items-baseline"><span>Bluebird <span class="text-xs text-ink/50">mezcal, blueberry hibiscus, tajin</span></span><span class="dot-leader"></span><span class="font-mono">$12.00</span></div>
+      <div class="flex items-baseline"><span>Espresso Martini</span><span class="dot-leader"></span><span class="font-mono">$14.00</span></div>
+      <div class="flex items-baseline"><span>Irish Coffee</span><span class="dot-leader"></span><span class="font-mono">$12.00</span></div>
+      <div class="flex items-baseline"><span>Milk Punch <span class="text-xs text-ink/50">rum, banana, amaretto, oat milk</span></span><span class="dot-leader"></span><span class="font-mono">$12.00</span></div>
+      <div class="flex items-baseline"><span>Mimosa</span><span class="dot-leader"></span><span class="font-mono">$8.00</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section id="gallery" class="max-w-7xl mx-auto px-5 md:px-8 pb-20 md:pb-28">
+  <div class="mb-10">
+    <p class="font-mono text-badcat text-xs tracking-[0.25em] uppercase mb-3">From the pass</p>
+    <h2 class="font-display font-700 text-4xl md:text-5xl">Gallery.</h2>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[140px] md:auto-rows-[180px]">
+    <img class="rounded-xl object-cover w-full h-full row-span-2 col-span-1" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/e2/51ab60d6c74b7a9213ce49bb1ec970/:original" alt="Hot Chicken Biscuit">
+    <img class="rounded-xl object-cover w-full h-full" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/9a/456659eb2c40179c73651ad7defbd1/:original" alt="Cocktail">
+    <img class="rounded-xl object-cover w-full h-full" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/98/7fd3edfe39475c968ca6a770c5459e/:original" alt="Vegan breakfast potatoes">
+    <img class="rounded-xl object-cover w-full h-full row-span-2" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/b0/0a5734a3db404aa71a4b4e31d9d7da/:original" alt="Crab scramble">
+    <img class="rounded-xl object-cover w-full h-full" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/aa/6f98cfab2549b2a422fbe733434c52/:original" alt="Matcha lattes">
+    <img class="rounded-xl object-cover w-full h-full" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/60/f7724a1b79450390d96417214b61ca/:original" alt="Chocolate peanut croissant">
+    <img class="rounded-xl object-cover w-full h-full row-span-2" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/34/87e1839ca04132aa7ead6777cadd2b/:original" alt="Pork chop with gravy and mashed potatoes">
+    <img class="rounded-xl object-cover w-full h-full" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/f4/31d75677364301b9f0e749a5e13f63/:original" alt="Brunch punch cocktail">
+    <img class="rounded-xl object-cover w-full h-full" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/c2/f6482b7ddf47a6bf891aed77a039cc/:original" alt="Vegan biscuit sandwich">
+    <img class="rounded-xl object-cover w-full h-full" src="https://cdn.spotapps.co/spothopper/image/fetch/f_auto,q_auto:best,c_fit,h_800/http://static.spotapps.co/spots/a4/f0a6fb83f049ce8b0586b6a7002c5c/:original" alt="Fresh baked bread loaves">
+  </div>
+</section>
+
+<!-- ============ REVIEWS ============ -->
+<section class="bg-paper py-20 md:py-28 grain">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="mb-12 text-center">
+      <p class="font-mono text-badcat text-xs tracking-[0.25em] uppercase mb-3">1,500+ Yelp reviews</p>
+      <h2 class="font-display font-700 text-4xl md:text-5xl">The regulars say it best.</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-cream rounded-2xl p-6 border border-ink/10">
+        <p class="text-gold mb-3">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+        <p class="text-ink/80 text-sm leading-relaxed mb-4">"The ABSOLUTE best brunch spot in New Orleans. Everything from the coffee, to the pastries, entrees, and cocktails are 10/10."</p>
+        <p class="font-display italic text-sm">&mdash; Kevin C., Bearcat CBD</p>
+      </div>
+      <div class="bg-cream rounded-2xl p-6 border border-ink/10">
+        <p class="text-gold mb-3">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+        <p class="text-ink/80 text-sm leading-relaxed mb-4">"I had the Lobster Daddy and it was the best breakfast I had in NOLA. The biscuit was amazing, seasoned EXTREMELY well."</p>
+        <p class="font-display italic text-sm">&mdash; Bobby H., Bearcat Uptown</p>
+      </div>
+      <div class="bg-cream rounded-2xl p-6 border border-ink/10">
+        <p class="text-gold mb-3">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+        <p class="text-ink/80 text-sm leading-relaxed mb-4">"We had four people in our party, two vegan and two who are not. This place has something delicious for everyone."</p>
+        <p class="font-display italic text-sm">&mdash; T W., Bearcat CBD</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ORDER CTA ============ -->
+<section id="order" class="bg-badcat text-cream py-20 md:py-24 text-center px-5">
+  <p class="font-mono text-xs tracking-[0.25em] uppercase text-gold mb-4">20% auto-gratuity on all takeout orders</p>
+  <h2 class="font-display font-700 text-4xl md:text-6xl mb-8">Don't feel like cooking today?</h2>
+  <div class="flex flex-wrap justify-center gap-4">
+    <a href="https://app.upserve.com/s/bearcat-cafe-jefferson" target="_blank" class="bg-cream text-ink font-body font-700 text-sm uppercase tracking-wide px-7 py-3.5 rounded-full hover:bg-gold hover:text-cream transition-colors">Order Uptown</a>
+    <a href="https://app.upserve.com/s/bearcat-cafe-downtown-new-orleans" target="_blank" class="bg-cream text-ink font-body font-700 text-sm uppercase tracking-wide px-7 py-3.5 rounded-full hover:bg-gold hover:text-cream transition-colors">Order CBD</a>
+    <a href="https://app.upserve.com/s/bearcat-julia-new-orleans" target="_blank" class="bg-cream text-ink font-body font-700 text-sm uppercase tracking-wide px-7 py-3.5 rounded-full hover:bg-gold hover:text-cream transition-colors">Order Baked</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-cream/80 pt-16 pb-8 px-5 md:px-8">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10 mb-14">
+    <div>
+      <p class="font-display font-700 text-2xl text-cream mb-3">BEARCAT CAFE</p>
+      <p class="text-sm leading-relaxed">Full-service breakfast &amp; lunch cafe in New Orleans. Sustainably-sourced coffee, honest indulgence, no reservations.</p>
+      <div class="flex gap-4 mt-5 text-sm">
+        <a href="https://www.instagram.com/bearcatnola" target="_blank" class="hover-underline">Instagram</a>
+        <a href="https://www.facebook.com/458787917802514" target="_blank" class="hover-underline">Facebook</a>
+      </div>
+    </div>
+    <div>
+      <p class="font-body font-700 text-cream text-sm uppercase tracking-wide mb-3">Uptown</p>
+      <p class="text-sm leading-relaxed">2521 Jena Street<br>New Orleans, LA 70115<br>(504) 309-9011<br>8am&ndash;3pm Tue&ndash;Sun</p>
+    </div>
+    <div>
+      <p class="font-body font-700 text-cream text-sm uppercase tracking-wide mb-3">CBD</p>
+      <p class="text-sm leading-relaxed">845 Carondelet St<br>New Orleans, LA 70130<br>(504) 766-7399<br>8am&ndash;2pm Tue&ndash;Fri, 8am&ndash;3pm Sat&ndash;Sun</p>
+    </div>
+    <div>
+      <p class="font-body font-700 text-cream text-sm uppercase tracking-wide mb-3">Baked</p>
+      <p class="text-sm leading-relaxed">726 Julia Street<br>New Orleans, LA 70130<br>(504) 438-8772<br>8am&ndash;2pm Mon&ndash;Fri, 8am&ndash;3pm Sat&ndash;Sun</p>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto border-t border-cream/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-cream/40">
+    <p>&copy; Bearcat Cafe &middot; New Orleans, LA</p>
+    <p>Design concept by IN-FLU-ENTIAL LLC &mdash; not the live site</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.toggle('hidden');
+  });
+
+  function showCat(which) {
+    const good = document.getElementById('panelGood');
+    const bad = document.getElementById('panelBad');
+    const btnGood = document.getElementById('btnGood');
+    const btnBad = document.getElementById('btnBad');
+    if (which === 'good') {
+      good.classList.remove('panel-hidden'); good.classList.add('panel-visible');
+      bad.classList.remove('panel-visible'); bad.classList.add('panel-hidden');
+      btnGood.classList.add('bg-goodcat','text-cream'); btnGood.classList.remove('text-ink/60');
+      btnBad.classList.remove('bg-badcat','text-cream'); btnBad.classList.add('text-ink/60');
+    } else {
+      bad.classList.remove('panel-hidden'); bad.classList.add('panel-visible');
+      good.classList.remove('panel-visible'); good.classList.add('panel-hidden');
+      btnBad.classList.add('bg-badcat','text-cream'); btnBad.classList.remove('text-ink/60');
+      btnGood.classList.remove('bg-goodcat','text-cream'); btnGood.classList.add('text-ink/60');
+    }
+  }
+</script>
+
+</body>
+</html>
